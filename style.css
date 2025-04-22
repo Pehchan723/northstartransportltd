@@ -178,7 +178,7 @@
   }
   
   .logo img {
-    max-height: 50px;
+    max-height: 80px;
   }
   
   .nav-menu {
@@ -382,7 +382,47 @@
   .service-btn:hover i {
     transform: translateX(5px);
   }
-  
+  /* Add these styles to your existing CSS */
+
+.service-price {
+  font-weight: bold;
+  color: #e74c3c; /* Red color for price, you can change this */
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+.service-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.call-btn {
+  background-color: #27ae60; /* Green color for call button */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.call-btn:hover {
+  background-color: #219653;
+  transform: translateY(-2px);
+}
+
+/* Adjust the existing service-btn to match the new layout */
+.service-btn {
+  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
   /* ========== ABOUT SECTION ========== */
   .about {
     padding: 5rem 0;
@@ -468,14 +508,14 @@
   }
   
   .ceo-image img {
-    border-radius: 50%;
+    border-radius: 10%;
     max-width: 300px;
     box-shadow: var(--shadow-lg);
     transition: var(--transition);
   }
   
   .ceo-container:hover .ceo-image img {
-    transform: scale(1.05);
+    transform: scale(2.05);
   }
   
   .ceo-message h2 {
