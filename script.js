@@ -528,3 +528,146 @@ if (!document.querySelector('meta[name="viewport"]')) {
     metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
     document.head.appendChild(metaViewport);
 }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loaded class after a slight delay for animation effect
+    setTimeout(function() {
+        document.getElementById('customers').classList.add('loaded');
+    }, 300);
+});
+</script>
+// Contact Form JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    const formResponse = document.getElementById('form-response');
+    
+    if (contactForm) {
+        // Add animation to form inputs
+        const formInputs = contactForm.querySelectorAll('.form-control');
+        formInputs.forEach(input => {
+            // Add focus effects
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('input-focused');
+                const icon = this.parentElement.querySelector('.input-icon');
+                if (icon) {
+                    icon.style.color = '#4a90e2';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('input-focused');
+                const icon = this.parentElement.querySelector('.input-icon');
+                if (icon) {
+                    icon.style.color = '#999';
+                }
+            });
+        });
+        
+        // Form validation and submission
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            let valid = true;
+            const requiredInputs = contactForm.querySelectorAll('[required]');
+            
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    valid = false;
+                    input.classList.add('input-error');
+                    
+                    setTimeout(() => {
+                        input.classList.remove('input-error');
+                    }, 3000);
+                }
+            });
+            
+            // Email validation
+            const emailInput = document.getElementById('email');
+            if (emailInput && emailInput.value) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value)) {
+                    valid = false;
+                    emailInput.classList.add('input-error');
+                    
+                    setTimeout(() => {
+                        emailInput.classList.remove('input-error');
+                    }, 3000);
+                }
+            }
+            
+            // If valid, show success message (in a real application, you would send data to server)
+            if (valid) {
+                // Simulate form submission
+                const submitBtn = contactForm.querySelector('.submit-btn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+                
+                // Simulate AJAX request
+                setTimeout(() => {
+                    contactForm.style.display = 'none';
+                    formResponse.classList.remove('hidden');
+                    formResponse.classList.add('fadeIn');
+                    
+                    // Reset form
+                    contactForm.reset();
+                }, 2000);
+            }
+        });
+    }
+    
+    // Add animation to info cards
+    const infoCards = document.querySelectorAll('.info-card');
+    if (infoCards.length > 0) {
+        infoCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('fadeInUp');
+        });
+    }
+});
+
+// Add these animation classes to your CSS
+document.head.insertAdjacentHTML('beforeend', `
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fadeIn {
+        animation: fadeIn 0.5s forwards;
+    }
+    
+    .fadeInUp {
+        opacity: 0;
+        animation: fadeInUp 0.5s forwards;
+    }
+    
+    .input-focused {
+        background-color: rgba(74, 144, 226, 0.03);
+    }
+    
+    .input-error {
+        border-color: #ff4d4d !important;
+        box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1) !important;
+        animation: shake 0.3s forwards;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+</style>
+`);
