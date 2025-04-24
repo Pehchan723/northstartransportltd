@@ -671,3 +671,23 @@ document.head.insertAdjacentHTML('beforeend', `
     }
 </style>
 `);
+// Mobile Menu Toggle Fix
+document.addEventListener('DOMContentLoaded', function() {
+    // Find the hamburger menu button
+    const menuToggle = document.querySelector('.navbar-toggler, #mobile-menu-toggle, header .menu-toggle, .hamburger');
+    
+    // Find the mobile menu
+    const mobileMenu = document.querySelector('.navbar-collapse, #mobile-menu, .mobile-nav, .main-menu');
+    
+    // Add click event to toggle menu
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            // Toggle menu visibility
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('show');
+            }
+            
+            console.log('Menu button clicked');
+        });
+    }
+});
