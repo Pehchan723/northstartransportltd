@@ -46,29 +46,42 @@ function adjustForScreenSize() {
   }
 }
 
-// Toggle Mobile Menu
-hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    hamburger.innerHTML = navMenu.classList.contains('active') 
-        ? '<i class="fas fa-times"></i>' 
-        : '<i class="fas fa-bars"></i>';
-    
-    // Prevent scrolling when menu is open on mobile
-    if (navMenu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = '';
-    }
-});
+// Select elements properly with proper selectors
+const hamburger = document.querySelector('.hamburger') || document.querySelector('.menu-toggle') || document.querySelector('.navbar-toggler');
+const navMenu = document.querySelector('.nav-menu') || document.querySelector('.mobile-menu') || document.querySelector('.navbar-collapse');
+const navLinks = document.querySelectorAll('.nav-link') || document.querySelectorAll('.menu-item a');
 
-// Close Mobile Menu on Link Click
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-        document.body.style.overflow = '';
+// Make sure elements are found before adding event listeners
+if (hamburger && navMenu) {
+    // Toggle Mobile Menu
+    hamburger.addEventListener('click', () => {
+        console.log('Menu clicked'); // Add this for debugging
+        navMenu.classList.toggle('active');
+        
+        // Change icon if using Font Awesome
+        if (hamburger.querySelector('i')) {
+            hamburger.innerHTML = navMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        }
+        
+        // Prevent scrolling when menu is open
+        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     });
-});
+    
+    // Close Mobile Menu on Link Click if navLinks exist
+    if (navLinks.length > 0) {
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                if (hamburger.querySelector('i')) {
+                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+                document.body.style.overflow = '';
+            });
+        });
+    }
+}
 
 // Sticky Header & Scroll to Top Button Visibility
 window.addEventListener('scroll', () => {
