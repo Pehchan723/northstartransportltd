@@ -1547,3 +1547,20 @@ textarea.form-control {
   .service-card:hover .service-img::after {
     left: 100%;
   }
+/* Mobile Menu Fix */
+.navbar-toggler, 
+.menu-toggle, 
+.hamburger {
+    cursor: pointer;
+    z-index: 1000;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* Show menu when active */
+.navbar-collapse.show,
+#mobile-menu.show,
+.mobile-nav.show,
+.main-menu.show {
+    display: block !important;
+}
