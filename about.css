@@ -172,7 +172,7 @@
   
   /* Hero Section */
   .about-hero {
-    background: linear-gradient(rgba(10, 77, 148, 0.85), rgba(10, 77, 148, 0.85)), url('/Asset/5.png') center/cover no-repeat;
+    background: linear-gradient(rgba(10, 77, 148, 0.85), rgba(10, 77, 148, 0.85)), url('Asset/5.png') center/cover no-repeat;
     height: 60vh;
     min-height: 400px;
     display: flex;
