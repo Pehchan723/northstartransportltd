@@ -806,15 +806,15 @@ window.addEventListener('hashchange', function() {
     initWebsite();
 });
 
-// Make init function globally accessible for manual triggering if needed
-window.initNorthStarWebsite = initWebsite;
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
-    hamburger.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-    });
+    if(hamburger) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+    }
     
     // Close menu when clicking a nav link (mobile)
     const navLinks = document.querySelectorAll('.nav-link');
