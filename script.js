@@ -53,35 +53,37 @@ const navLinks = document.querySelectorAll('.nav-link') || document.querySelecto
 
 // Make sure elements are found before adding event listeners
 if (hamburger && navMenu) {
-    // Toggle Mobile Menu
-    hamburger.addEventListener('click', () => {
-        console.log('Menu clicked'); // Add this for debugging
+   // Add this script to your JavaScript file or at the end of your HTML body
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get elements
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    // Toggle mobile menu
+    hamburger.addEventListener('click', function() {
         navMenu.classList.toggle('active');
-        
-        // Change icon if using Font Awesome
-        if (hamburger.querySelector('i')) {
-            hamburger.innerHTML = navMenu.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        }
-        
-        // Prevent scrolling when menu is open
-        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        hamburger.classList.toggle('active');
     });
     
-    // Close Mobile Menu on Link Click if navLinks exist
-    if (navLinks.length > 0) {
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-                if (hamburger.querySelector('i')) {
-                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-                }
-                document.body.style.overflow = '';
-            });
+    // Close mobile menu when clicking on a nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
         });
-    }
-}
+    });
+    
+    // Handle scroll effect for header
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 10) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+});
 
 // Sticky Header & Scroll to Top Button Visibility
 window.addEventListener('scroll', () => {
