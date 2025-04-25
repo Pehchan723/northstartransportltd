@@ -1,579 +1,396 @@
-// JavaScript for North Star Transport Ltd Website - Mobile Responsive Version
-
-// DOM Elements
-const header = document.querySelector('header');
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
-const navLinks = document.querySelectorAll('.nav-link');
-const scrollTopBtn = document.querySelector('.scroll-top');
-const sections = document.querySelectorAll('section');
-const serviceCards = document.querySelectorAll('.service-card');
-const contactForm = document.querySelector('.contact-form form');
-
-// Check for mobile viewport
-function isMobile() {
-  return window.innerWidth <= 768;
-}
-
-// Adjust elements based on screen size
-function adjustForScreenSize() {
-  const mobile = isMobile();
-  
-  // Adjust section heights for mobile
-  sections.forEach(section => {
-    section.style.minHeight = mobile ? 'auto' : '100vh';
-    section.style.padding = mobile ? '60px 20px' : '80px 50px';
-  });
-  
-  // Adjust service cards for mobile
-  serviceCards.forEach(card => {
-    card.style.height = mobile ? 'auto' : '100%';
-    card.style.margin = mobile ? '0 0 20px 0' : '0 15px';
-  });
-  
-  // Adjust testimonial slider for mobile
-  const testimonialItems = document.querySelectorAll('.testimonial-item');
-  if (testimonialItems.length) {
-    testimonialItems.forEach(item => {
-      item.style.padding = mobile ? '15px' : '30px';
-    });
-  }
-  
-  // Adjust contact form padding for mobile
-  const contactFormEl = document.querySelector('.contact-form');
-  if (contactFormEl) {
-    contactFormEl.style.padding = mobile ? '20px 15px' : '40px';
-  }
-}
-
-// Select elements properly with proper selectors
-const hamburger = document.querySelector('.hamburger') || document.querySelector('.menu-toggle') || document.querySelector('.navbar-toggler');
-const navMenu = document.querySelector('.nav-menu') || document.querySelector('.mobile-menu') || document.querySelector('.navbar-collapse');
-const navLinks = document.querySelectorAll('.nav-link') || document.querySelectorAll('.menu-item a');
-
-// Make sure elements are found before adding event listeners
-if (hamburger && navMenu) {
-   // Add this script to your JavaScript file or at the end of your HTML body
-
+// Complete JavaScript for North Star Transport Ltd Website with Fixed Mobile Menu
 document.addEventListener('DOMContentLoaded', function() {
-    // Get elements
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+    // ----- Core Element Selection -----
+    const header = document.querySelector('header');
+    const sections = document.querySelectorAll('section');
+    const serviceCards = document.querySelectorAll('.service-card');
+    const scrollTopBtn = document.querySelector('.scroll-top');
+    const contactForm = document.querySelector('.contact-form form') || document.getElementById('contactForm');
     
-    // Toggle mobile menu
-    hamburger.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-        hamburger.classList.toggle('active');
-    });
+    // ----- Mobile Detection -----
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
     
-    // Close mobile menu when clicking on a nav link
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
-            hamburger.classList.remove('active');
+    // ----- Mobile Menu Setup -----
+    // Find menu toggle button (checking multiple possible class names)
+    const menuToggle = document.querySelector('.hamburger') || 
+                       document.querySelector('.navbar-toggler') || 
+                       document.querySelector('#mobile-menu-toggle') || 
+                       document.querySelector('header .menu-toggle');
+    
+    // Find mobile menu container
+    const mobileMenu = document.querySelector('.nav-menu') || 
+                       document.querySelector('.navbar-collapse') || 
+                       document.querySelector('#mobile-menu') || 
+                       document.querySelector('.mobile-nav') || 
+                       document.querySelector('.main-menu');
+    
+    // Find all navigation links
+    const navLinks = document.querySelectorAll('.nav-link') || 
+                     document.querySelectorAll('.nav-menu a') || 
+                     document.querySelectorAll('.navbar-nav a') || 
+                     document.querySelectorAll('header nav a');
+    
+    // Console log for debugging
+    console.log('Menu Button Found:', menuToggle ? true : false);
+    console.log('Mobile Menu Found:', mobileMenu ? true : false);
+    
+    // ----- Mobile Menu Toggle Function -----
+    if (menuToggle && mobileMenu) {
+        // Add click event to toggle menu
+        menuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Toggle active classes
+            mobileMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('show'); // Additional class some frameworks use
+            menuToggle.classList.toggle('active');
+            
+            console.log('Menu toggled');
+            
+            // Toggle body scroll
+            if (mobileMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         });
-    });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (mobileMenu.classList.contains('active') && 
+                !mobileMenu.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                mobileMenu.classList.remove('active', 'show');
+                menuToggle.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close menu when clicking on nav links
+        if (navLinks) {
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active', 'show');
+                    menuToggle.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+        }
+    } else {
+        console.error('Mobile menu elements not found. Check your HTML classes.');
+    }
     
-    // Handle scroll effect for header
-    window.addEventListener('scroll', function() {
-        const header = document.querySelector('header');
-        if (window.scrollY > 10) {
+    // ----- Inject Essential Mobile Menu Styles -----
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        @media (max-width: 768px) {
+            /* Make menu button visible */
+            .hamburger, .navbar-toggler, #mobile-menu-toggle, header .menu-toggle {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                cursor: pointer;
+                z-index: 1000;
+            }
+            
+            /* Mobile menu positioning */
+            .nav-menu, .navbar-collapse, #mobile-menu, .mobile-nav, .main-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                z-index: 999;
+                transition: right 0.3s ease;
+                padding-top: 60px;
+                overflow-y: auto;
+            }
+            
+            /* Active mobile menu */
+            .nav-menu.active, .navbar-collapse.active, #mobile-menu.active, .mobile-nav.active, .main-menu.active,
+            .nav-menu.show, .navbar-collapse.show, #mobile-menu.show, .mobile-nav.show, .main-menu.show {
+                right: 0;
+            }
+            
+            /* Menu items styling */
+            .nav-menu a, .navbar-collapse a, #mobile-menu a, .mobile-nav a, .main-menu a {
+                display: block;
+                padding: 12px 20px;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+        }
+    `;
+    document.head.appendChild(styleElement);
+    
+    // ----- Responsive Adjustments -----
+    function adjustForScreenSize() {
+        const mobile = isMobile();
+        
+        // Adjust section heights for mobile
+        sections.forEach(section => {
+            section.style.minHeight = mobile ? 'auto' : '100vh';
+            section.style.padding = mobile ? '60px 20px' : '80px 50px';
+        });
+        
+        // Adjust service cards for mobile
+        serviceCards.forEach(card => {
+            card.style.height = mobile ? 'auto' : '100%';
+            card.style.margin = mobile ? '0 0 20px 0' : '0 15px';
+        });
+        
+        // Adjust testimonial slider for mobile
+        const testimonialItems = document.querySelectorAll('.testimonial-item');
+        if (testimonialItems.length) {
+            testimonialItems.forEach(item => {
+                item.style.padding = mobile ? '15px' : '30px';
+            });
+        }
+        
+        // Adjust contact form padding for mobile
+        const contactFormEl = document.querySelector('.contact-form');
+        if (contactFormEl) {
+            contactFormEl.style.padding = mobile ? '20px 15px' : '40px';
+        }
+        
+        // Adjust scroll top button
+        if (scrollTopBtn) {
+            scrollTopBtn.style.bottom = mobile ? '15px' : '30px';
+            scrollTopBtn.style.right = mobile ? '15px' : '30px';
+            scrollTopBtn.style.padding = mobile ? '8px 10px' : '10px 15px';
+        }
+    }
+    
+    // Initial adjustment
+    adjustForScreenSize();
+    
+    // ----- Sticky Header & Scroll Effects -----
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY;
+        
+        // Header changes on scroll
+        if (header && scrollPosition > 50) {
             header.classList.add('scrolled');
-        } else {
+        } else if (header) {
             header.classList.remove('scrolled');
         }
-    });
-});
-
-// Sticky Header & Scroll to Top Button Visibility
-window.addEventListener('scroll', () => {
-    const scrollPosition = window.scrollY;
-    
-    // Header changes on scroll
-    if (scrollPosition > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-    
-    // Show/hide scroll to top button
-    if (scrollPosition > 500) {
-        scrollTopBtn.classList.add('active');
-    } else {
-        scrollTopBtn.classList.remove('active');
-    }
-    
-    // Active nav link on scroll
-    updateActiveNavLink();
-});
-
-// Update Active Navigation Link on Scroll
-function updateActiveNavLink() {
-    const scrollPosition = window.scrollY;
-    
-    sections.forEach(section => {
-        // Adjust the offset for better accuracy on mobile
-        const headerOffset = isMobile() ? 60 : 100;
-        const sectionTop = section.offsetTop - headerOffset;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute('id');
         
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${sectionId}`) {
-                    link.classList.add('active');
-                }
+        // Show/hide scroll to top button
+        if (scrollTopBtn) {
+            if (scrollPosition > 500) {
+                scrollTopBtn.classList.add('active');
+            } else {
+                scrollTopBtn.classList.remove('active');
+            }
+        }
+        
+        // Active nav link on scroll
+        updateActiveNavLink(scrollPosition);
+    });
+    
+    // ----- Navigation Highlighting -----
+    function updateActiveNavLink(scrollPosition) {
+        if (!sections.length || !navLinks.length) return;
+        
+        sections.forEach(section => {
+            const headerOffset = isMobile() ? 60 : 100;
+            const sectionTop = section.offsetTop - headerOffset;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href');
+                    if (href && href === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+    
+    // ----- Smooth Scroll for Internal Links -----
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (!targetElement) return;
+            
+            e.preventDefault();
+            
+            const headerOffset = isMobile() ? 60 : 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
             });
-        }
-    });
-}
-
-// Initialize active nav link on page load
-document.addEventListener('DOMContentLoaded', () => {
-    updateActiveNavLink();
-    animateOnScroll();
-    adjustForScreenSize(); // Initial adjustment
-    
-    // Initialize AOS (Animate on Scroll)
-    initAOS();
-});
-
-// Handle window resize events
-window.addEventListener('resize', () => {
-    // Debounce the resize event for better performance
-    clearTimeout(window.resizeTimeout);
-    window.resizeTimeout = setTimeout(() => {
-        adjustForScreenSize();
-        updateActiveNavLink();
-    }, 250);
-    
-    // Close mobile menu on resize
-    if (!isMobile() && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-        document.body.style.overflow = '';
-    }
-});
-
-// Smooth Scroll for Internal Links with better mobile handling
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (!targetElement) return;
-        
-        // Different header offset for mobile vs desktop
-        const headerOffset = isMobile() ? 60 : 80;
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Contact Form Submission with Animation
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Simulate form submission (replace with actual submission logic)
-        const submitBtn = this.querySelector('.submit-btn');
-        const originalText = submitBtn.textContent;
-        
-        submitBtn.textContent = 'Sending...';
-        submitBtn.disabled = true;
-        
-        setTimeout(() => {
-            // Show success message
-            const formGroups = this.querySelectorAll('.form-group');
-            const successMessage = document.createElement('div');
-            successMessage.classList.add('success-message');
-            successMessage.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                <p>Your message has been sent successfully! We will contact you soon.</p>
-            `;
-            
-            // Apply success styles (mobile-friendly)
-            successMessage.style.display = 'flex';
-            successMessage.style.alignItems = 'center'; 
-            successMessage.style.backgroundColor = '#d4edda';
-            successMessage.style.color = '#155724';
-            successMessage.style.padding = isMobile() ? '10px' : '15px';
-            successMessage.style.borderRadius = '5px';
-            successMessage.style.marginBottom = '20px';
-            successMessage.style.animation = 'fadeIn 0.5s ease';
-            successMessage.style.flexWrap = isMobile() ? 'wrap' : 'nowrap';
-            successMessage.style.textAlign = isMobile() ? 'center' : 'left';
-            
-            successMessage.querySelector('i').style.fontSize = isMobile() ? '1.2rem' : '1.5rem';
-            successMessage.querySelector('i').style.marginRight = isMobile() ? '8px' : '15px';
-            successMessage.querySelector('i').style.color = '#28a745';
-            
-            if (isMobile()) {
-                successMessage.querySelector('i').style.margin = '0 auto 10px';
-                successMessage.querySelector('p').style.width = '100%';
-                successMessage.querySelector('p').style.fontSize = '14px';
-            }
-            
-            // Insert before the first form group
-            this.insertBefore(successMessage, formGroups[0]);
-            
-            // Reset form
-            this.reset();
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            
-            // Remove success message after 5 seconds
-            setTimeout(() => {
-                successMessage.style.animation = 'fadeOut 0.5s ease';
-                setTimeout(() => {
-                    successMessage.remove();
-                }, 500);
-            }, 5000);
-        }, 2000);
-    });
-}
-
-// Animate Elements on Scroll - Improved for mobile
-function animateOnScroll() {
-    const elementsToAnimate = document.querySelectorAll('.service-card, .about-img, .about-content, .contact-info, .contact-form');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Delay animation slightly on mobile for better performance
-                const delay = isMobile() ? 100 : 0;
-                setTimeout(() => {
-                    entry.target.classList.add('animated');
-                }, delay);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: isMobile() ? 0.1 : 0.2, // Lower threshold on mobile
-        rootMargin: isMobile() ? '0px 0px -30px 0px' : '0px 0px -50px 0px'
-    });
-    
-    elementsToAnimate.forEach(element => {
-        observer.observe(element);
-    });
-}
-
-// Initialize AOS (Animate on Scroll) Library with mobile optimizations
-function initAOS() {
-    // Check if AOS is available
-    if (typeof AOS !== 'undefined') {
-        AOS.init({
-            duration: isMobile() ? 600 : 800, // Faster animations on mobile
-            easing: 'ease-in-out',
-            once: true,
-            mirror: false,
-            disable: false, // Enable on all devices but with optimized settings
-            offset: isMobile() ? 30 : 50
-        });
-    }
-}
-
-// Scroll to Top Button Functionality
-if (scrollTopBtn) {
-    scrollTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
         });
     });
     
-    // Adjust position on mobile devices
-    scrollTopBtn.style.bottom = isMobile() ? '15px' : '30px';
-    scrollTopBtn.style.right = isMobile() ? '15px' : '30px';
-    scrollTopBtn.style.padding = isMobile() ? '8px 10px' : '10px 15px';
-}
-
-// Service Cards Hover Effects - Modified for touch devices
-serviceCards.forEach(card => {
-    // Use touchstart for mobile devices
-    if ('ontouchstart' in window) {
-        card.addEventListener('touchstart', () => {
-            // Remove hover class from all other cards
-            serviceCards.forEach(otherCard => {
-                if (otherCard !== card) {
-                    otherCard.classList.remove('hover');
-                }
+    // ----- Scroll to Top Button -----
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-            // Toggle hover class on current card
-            card.classList.toggle('hover');
-        });
-    } else {
-        // Use mouseenter/mouseleave for non-touch devices
-        card.addEventListener('mouseenter', () => {
-            card.classList.add('hover');
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.classList.remove('hover');
         });
     }
-});
-
-// Testimonial Slider - Mobile optimized
-const testimonialSlider = document.querySelector('.testimonial-slider');
-if (testimonialSlider) {
-    let currentSlide = 0;
-    const slides = testimonialSlider.querySelectorAll('.testimonial-item');
-    const totalSlides = slides.length;
-    const dots = document.querySelector('.slider-dots');
-    let touchStartX = 0;
-    let touchEndX = 0;
     
-    // Add touch swipe functionality for mobile
-    testimonialSlider.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    
-    testimonialSlider.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-    
-    function handleSwipe() {
-        const swipeThreshold = 50;
-        if (touchEndX < touchStartX - swipeThreshold) {
-            // Swipe left - next slide
-            currentSlide = (currentSlide + 1) % totalSlides;
-            goToSlide(currentSlide);
-        }
-        if (touchEndX > touchStartX + swipeThreshold) {
-            // Swipe right - previous slide
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            goToSlide(currentSlide);
-        }
-    }
-    
-    // Create navigation dots
-    if (totalSlides > 1) {
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('span');
-            dot.classList.add('slider-dot');
-            if (i === 0) dot.classList.add('active');
-            dot.dataset.slide = i;
-            dots.appendChild(dot);
-            
-            // Make dots bigger on mobile for easier tapping
-            if (isMobile()) {
-                dot.style.width = '12px';
-                dot.style.height = '12px';
-                dot.style.margin = '0 8px';
-            }
-            
-            // Add click event to dots
-            dot.addEventListener('click', () => {
-                goToSlide(i);
+    // ----- Service Cards Hover Effects -----
+    serviceCards.forEach(card => {
+        // Use touchstart for mobile devices
+        if ('ontouchstart' in window) {
+            card.addEventListener('touchstart', () => {
+                // Remove hover class from all other cards
+                serviceCards.forEach(otherCard => {
+                    if (otherCard !== card) {
+                        otherCard.classList.remove('hover');
+                    }
+                });
+                // Toggle hover class on current card
+                card.classList.toggle('hover');
             });
-        }
-        
-        // Automatic slide change - slower on mobile
-        const slideInterval = isMobile() ? 6000 : 5000;
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            goToSlide(currentSlide);
-        }, slideInterval);
-    }
-    
-    // Function to change slides
-    function goToSlide(slideIndex) {
-        // Update slides with better transition for mobile
-        slides.forEach((slide, index) => {
-            slide.style.transition = isMobile() ? 'transform 0.4s ease' : 'transform 0.5s ease';
-            slide.style.transform = `translateX(${100 * (index - slideIndex)}%)`;
-        });
-        
-        // Update dots
-        const allDots = dots.querySelectorAll('.slider-dot');
-        allDots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === slideIndex);
-        });
-        
-        currentSlide = slideIndex;
-    }
-    
-    // Initialize slides
-    slides.forEach((slide, index) => {
-        slide.style.transform = `translateX(${index * 100}%)`;
-        
-        // Adjust padding for mobile
-        if (isMobile()) {
-            slide.style.padding = '20px 15px';
-        }
-    });
-}
-
-// Load Google Maps API if map element exists - with responsive sizing
-const mapElement = document.getElementById('contact-map');
-if (mapElement) {
-    // Set responsive height
-    mapElement.style.height = isMobile() ? '250px' : '400px';
-    
-    function initMap() {
-        // Replace with company coordinates
-        const companyLocation = { lat: 40.7128, lng: -74.0060 };
-        
-        const map = new google.maps.Map(mapElement, {
-            zoom: isMobile() ? 14 : 15, // Slightly zoomed out on mobile
-            center: companyLocation,
-            styles: [
-                {
-                    "featureType": "all",
-                    "elementType": "geometry",
-                    "stylers": [{ "color": "#f5f5f5" }]
-                },
-                // More map styles can be added here
-            ],
-            // Disable some controls on mobile for better user experience
-            zoomControl: !isMobile(),
-            mapTypeControl: !isMobile(),
-            fullscreenControl: !isMobile()
-        });
-        
-        const marker = new google.maps.Marker({
-            position: companyLocation,
-            map: map,
-            title: 'North Star Transport Ltd',
-            icon: {
-                url: 'images/map-marker.png',
-                // Smaller marker on mobile
-                scaledSize: new google.maps.Size(isMobile() ? 30 : 40, isMobile() ? 30 : 40)
-            }
-        });
-    }
-    
-    // Load Google Maps API
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap`;
-    script.defer = true;
-    script.async = true;
-    document.head.appendChild(script);
-}
-
-// FAQ Section Accordion - Mobile Optimized
-const faqItems = document.querySelectorAll('.faq-item');
-faqItems.forEach(item => {
-    const question = item.querySelector('.faq-question');
-    
-    // Adjust padding on mobile
-    if (isMobile()) {
-        question.style.padding = '12px 15px';
-        item.querySelector('.faq-answer').style.padding = '0 15px 15px';
-    }
-    
-    question.addEventListener('click', () => {
-        // Close all other items
-        faqItems.forEach(otherItem => {
-            if (otherItem !== item) {
-                otherItem.classList.remove('active');
-                otherItem.querySelector('.faq-answer').style.maxHeight = null;
-            }
-        });
-        
-        // Toggle current item
-        item.classList.toggle('active');
-        const answer = item.querySelector('.faq-answer');
-        if (item.classList.contains('active')) {
-            answer.style.maxHeight = answer.scrollHeight + 'px';
         } else {
-            answer.style.maxHeight = null;
+            // Use mouseenter/mouseleave for non-touch devices
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('hover');
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('hover');
+            });
         }
     });
-});
-
-// Add smooth animation to page transitions
-window.addEventListener('beforeunload', (event) => {
-    document.body.classList.add('page-transition');
-});
-
-// Animation keyframes for page elements - differentiated for mobile
-document.head.insertAdjacentHTML('beforeend', `
-<style>
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(${isMobile() ? '10px' : '20px'}); }
-        to { opacity: 1; transform: translateY(0); }
-    }
     
-    @keyframes fadeOut {
-        from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(${isMobile() ? '-10px' : '-20px'}); }
-    }
-    
-    .animated {
-        animation: fadeIn ${isMobile() ? '0.6s' : '0.8s'} ease forwards;
-    }
-    
-    /* Mobile-specific styles */
-    @media (max-width: 768px) {
-        .animated {
-            animation-duration: 0.6s;
+    // ----- Testimonial Slider -----
+    const testimonialSlider = document.querySelector('.testimonial-slider');
+    if (testimonialSlider) {
+        let currentSlide = 0;
+        const slides = testimonialSlider.querySelectorAll('.testimonial-item');
+        const totalSlides = slides.length;
+        const dots = document.querySelector('.slider-dots');
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        // Add touch swipe functionality for mobile
+        testimonialSlider.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        testimonialSlider.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe left - next slide
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe right - previous slide
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                goToSlide(currentSlide);
+            }
         }
         
-        /* Fix overflow issues on mobile */
-        body, html {
-            overflow-x: hidden;
-            width: 100%;
+        // Create navigation dots
+        if (totalSlides > 1 && dots) {
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                dot.classList.add('slider-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.dataset.slide = i;
+                dots.appendChild(dot);
+                
+                // Make dots bigger on mobile for easier tapping
+                if (isMobile()) {
+                    dot.style.width = '12px';
+                    dot.style.height = '12px';
+                    dot.style.margin = '0 8px';
+                }
+                
+                // Add click event to dots
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+            }
+            
+            // Automatic slide change - slower on mobile
+            const slideInterval = isMobile() ? 6000 : 5000;
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+            }, slideInterval);
         }
         
-        /* Ensure sections don't overflow horizontally */
-        section {
-            width: 100%;
-            box-sizing: border-box;
+        // Function to change slides
+        function goToSlide(slideIndex) {
+            // Update slides with better transition for mobile
+            slides.forEach((slide, index) => {
+                slide.style.transition = isMobile() ? 'transform 0.4s ease' : 'transform 0.5s ease';
+                slide.style.transform = `translateX(${100 * (index - slideIndex)}%)`;
+            });
+            
+            // Update dots
+            if (dots) {
+                const allDots = dots.querySelectorAll('.slider-dot');
+                allDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === slideIndex);
+                });
+            }
+            
+            currentSlide = slideIndex;
         }
+        
+        // Initialize slides
+        slides.forEach((slide, index) => {
+            slide.style.transform = `translateX(${index * 100}%)`;
+            
+            // Adjust padding for mobile
+            if (isMobile()) {
+                slide.style.padding = '20px 15px';
+            }
+        });
     }
-</style>
-`);
-
-// Add viewport meta tag if missing (critical for responsive design)
-if (!document.querySelector('meta[name="viewport"]')) {
-    const metaViewport = document.createElement('meta');
-    metaViewport.name = 'viewport';
-    metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-    document.head.appendChild(metaViewport);
-}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add loaded class after a slight delay for animation effect
-    setTimeout(function() {
-        document.getElementById('customers').classList.add('loaded');
-    }, 300)
-});
-</script>
-// Contact Form JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.getElementById('contactForm');
-    const formResponse = document.getElementById('form-response');
     
+    // ----- Contact Form Handling -----
     if (contactForm) {
         // Add animation to form inputs
-        const formInputs = contactForm.querySelectorAll('.form-control');
+        const formInputs = contactForm.querySelectorAll('.form-control, input, textarea, select');
         formInputs.forEach(input => {
             // Add focus effects
             input.addEventListener('focus', function() {
-                this.parentElement.classList.add('input-focused');
-                const icon = this.parentElement.querySelector('.input-icon');
-                if (icon) {
-                    icon.style.color = '#4a90e2';
+                const parent = this.parentElement;
+                if (parent) {
+                    parent.classList.add('input-focused');
+                    const icon = parent.querySelector('.input-icon');
+                    if (icon) {
+                        icon.style.color = '#4a90e2';
+                    }
                 }
             });
             
             input.addEventListener('blur', function() {
-                this.parentElement.classList.remove('input-focused');
-                const icon = this.parentElement.querySelector('.input-icon');
-                if (icon) {
-                    icon.style.color = '#999';
+                const parent = this.parentElement;
+                if (parent) {
+                    parent.classList.remove('input-focused');
+                    const icon = parent.querySelector('.input-icon');
+                    if (icon) {
+                        icon.style.color = '#999';
+                    }
                 }
             });
         });
@@ -598,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Email validation
-            const emailInput = document.getElementById('email');
+            const emailInput = contactForm.querySelector('[type="email"], #email');
             if (emailInput && emailInput.value) {
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailPattern.test(emailInput.value)) {
@@ -611,98 +428,242 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // If valid, show success message (in a real application, you would send data to server)
+            // If valid, show success message
             if (valid) {
                 // Simulate form submission
-                const submitBtn = contactForm.querySelector('.submit-btn');
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                submitBtn.disabled = true;
+                const submitBtn = contactForm.querySelector('.submit-btn, [type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    submitBtn.disabled = true;
                 
-                // Simulate AJAX request
-                setTimeout(() => {
-                    contactForm.style.display = 'none';
-                    formResponse.classList.remove('hidden');
-                    formResponse.classList.add('fadeIn');
-                    
-                    // Reset form
-                    contactForm.reset();
-                }, 2000);
+                    // Simulate AJAX request
+                    setTimeout(() => {
+                        // Create success message
+                        const formResponse = document.getElementById('form-response') || document.createElement('div');
+                        formResponse.id = 'form-response';
+                        formResponse.className = 'success-message fadeIn';
+                        formResponse.innerHTML = `
+                            <i class="fas fa-check-circle"></i>
+                            <p>Your message has been sent successfully! We will contact you soon.</p>
+                        `;
+                        
+                        // Add success message to page
+                        if (!document.getElementById('form-response')) {
+                            contactForm.parentNode.appendChild(formResponse);
+                        }
+                        
+                        // Hide form if needed
+                        if (document.getElementById('form-response')) {
+                            contactForm.style.display = 'none';
+                        }
+                        
+                        // Reset form
+                        contactForm.reset();
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 2000);
+                }
             }
         });
     }
     
-    // Add animation to info cards
-    const infoCards = document.querySelectorAll('.info-card');
-    if (infoCards.length > 0) {
-        infoCards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
-            card.classList.add('fadeInUp');
+    // ----- FAQ Section Accordion -----
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        // Adjust padding on mobile
+        if (question && isMobile()) {
+            question.style.padding = '12px 15px';
+            
+            const answer = item.querySelector('.faq-answer');
+            if (answer) {
+                answer.style.padding = '0 15px 15px';
+            }
+        }
+        
+        if (question) {
+            question.addEventListener('click', () => {
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        const otherAnswer = otherItem.querySelector('.faq-answer');
+                        if (otherAnswer) {
+                            otherAnswer.style.maxHeight = null;
+                        }
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
+                const answer = item.querySelector('.faq-answer');
+                if (answer) {
+                    if (item.classList.contains('active')) {
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    } else {
+                        answer.style.maxHeight = null;
+                    }
+                }
+            });
+        }
+    });
+    
+    // ----- Animation Effects -----
+    function animateOnScroll() {
+        const elementsToAnimate = document.querySelectorAll('.service-card, .about-img, .about-content, .contact-info, .contact-form');
+        
+        if (!('IntersectionObserver' in window)) {
+            // Fallback for browsers that don't support IntersectionObserver
+            elementsToAnimate.forEach(element => {
+                element.classList.add('animated');
+            });
+            return;
+        }
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Delay animation slightly on mobile for better performance
+                    const delay = isMobile() ? 100 : 0;
+                    setTimeout(() => {
+                        entry.target.classList.add('animated');
+                    }, delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: isMobile() ? 0.1 : 0.2, // Lower threshold on mobile
+            rootMargin: isMobile() ? '0px 0px -30px 0px' : '0px 0px -50px 0px'
+        });
+        
+        elementsToAnimate.forEach(element => {
+            observer.observe(element);
         });
     }
-});
-
-// Add these animation classes to your CSS
-document.head.insertAdjacentHTML('beforeend', `
-<style>
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    
+    // Initialize animations
+    animateOnScroll();
+    
+    // ----- AOS Animation Library Integration -----
+    function initAOS() {
+        // Check if AOS is available
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: isMobile() ? 600 : 800, // Faster animations on mobile
+                easing: 'ease-in-out',
+                once: true,
+                mirror: false,
+                disable: false, // Enable on all devices but with optimized settings
+                offset: isMobile() ? 30 : 50
+            });
+        }
     }
     
-    @keyframes fadeInUp {
-        from {
+    // Initialize AOS if available
+    initAOS();
+    
+    // ----- Window Resize Handler -----
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            adjustForScreenSize();
+            updateActiveNavLink(window.scrollY);
+        }, 250);
+    });
+    
+    // ----- Customer Testimonials Animation -----
+    const customersSection = document.getElementById('customers');
+    if (customersSection) {
+        setTimeout(function() {
+            customersSection.classList.add('loaded');
+        }, 300);
+    }
+    
+    // ----- CSS Animation Definitions -----
+    const animationStyles = document.createElement('style');
+    animationStyles.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(${isMobile() ? '10px' : '20px'}); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(${isMobile() ? '-10px' : '-20px'}); }
+        }
+        
+        .animated {
+            animation: fadeIn ${isMobile() ? '0.6s' : '0.8s'} ease forwards;
+        }
+        
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        .fadeInUp {
             opacity: 0;
-            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-    }
-    
-    .fadeIn {
-        animation: fadeIn 0.5s forwards;
-    }
-    
-    .fadeInUp {
-        opacity: 0;
-        animation: fadeInUp 0.5s forwards;
-    }
-    
-    .input-focused {
-        background-color: rgba(74, 144, 226, 0.03);
-    }
-    
-    .input-error {
-        border-color: #ff4d4d !important;
-        box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1) !important;
-        animation: shake 0.3s forwards;
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20%, 60% { transform: translateX(-5px); }
-        40%, 80% { transform: translateX(5px); }
-    }
-</style>
-`);
-// Mobile Menu Toggle Fix
-document.addEventListener('DOMContentLoaded', function() {
-    // Find the hamburger menu button
-    const menuToggle = document.querySelector('.navbar-toggler, #mobile-menu-toggle, header .menu-toggle, .hamburger');
-    
-    // Find the mobile menu
-    const mobileMenu = document.querySelector('.navbar-collapse, #mobile-menu, .mobile-nav, .main-menu');
-    
-    // Add click event to toggle menu
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
-            // Toggle menu visibility
-            if (mobileMenu) {
-                mobileMenu.classList.toggle('show');
+        
+        .input-focused {
+            background-color: rgba(74, 144, 226, 0.03);
+        }
+        
+        .input-error {
+            border-color: #ff4d4d !important;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1) !important;
+            animation: shake 0.3s forwards;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            .animated {
+                animation-duration: 0.6s;
             }
             
-            console.log('Menu button clicked');
-        });
+            /* Fix overflow issues on mobile */
+            body, html {
+                overflow-x: hidden;
+                width: 100%;
+            }
+            
+            /* Ensure sections don't overflow horizontally */
+            section {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    `;
+    document.head.appendChild(animationStyles);
+    
+    // ----- Add Viewport Meta Tag If Missing -----
+    if (!document.querySelector('meta[name="viewport"]')) {
+        const metaViewport = document.createElement('meta');
+        metaViewport.name = 'viewport';
+        metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(metaViewport);
     }
+    
+    // Log initialization complete
+    console.log('Website JS initialization complete');
 });
