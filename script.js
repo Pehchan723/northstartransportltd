@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add loaded class after a slight delay for animation effect
     setTimeout(function() {
         document.getElementById('customers').classList.add('loaded');
-    }, 300);
+    }, 300)
 });
 </script>
 // Contact Form JavaScript
